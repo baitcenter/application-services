@@ -116,6 +116,35 @@ class FxAccount: RustFxAccount {
         }
     }
 
+    override func migrateFromSessionToken(sessionToken: String, kSync: String, kXCS: String) -> Bool {
+        defer { tryPersistState() }
+        do {
+            return try super.migrateFromSessionToken(sessionToken: sessionToken, kSync: kSync, kXCS: kXCS)
+        } catch {
+            FxALog.error("migrateFromSessionToken error: \(error).")
+            return false
+        }
+    }
+
+    override func retryMigrateFromSessionToken() -> Bool {
+        defer { tryPersistState() }
+        do {
+            return try super.retryMigrateFromSessionToken()
+        } catch {
+            FxALog.error("retryMigrateFromSessionToken error: \(error).")
+            return false
+        }
+    }
+
+    override func isInMigrationState() -> Bool {
+        do {
+            return try super.isInMigrationState()
+        } catch {
+            FxALog.error("isInMigrationState error: \(error).")
+            return false
+        }
+    }
+
     override func clearAccessTokenCache() throws {
         defer { tryPersistState() }
         try super.clearAccessTokenCache()
